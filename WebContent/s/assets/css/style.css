@@ -1,0 +1,139 @@
+/**/
+.center{
+
+}
+.profile-picture img{
+    min-width: 11em;
+    max-width: 13em;
+    width: auto;
+    min-height: 13em;
+    max-height: 15em;
+    height: auto;
+}
+.profile-picture form{
+	width: 13.2em;
+    padding-left: 1.2em;
+    padding-right: 1.2em;
+    padding-top: 1.2em;
+}
+.bootstrap-table .form-control,.btn-white{
+	    height: 36px;
+}
+.table > thead > tr > th {
+	text-align: center !important;
+}
+.bootstrap-table .table {
+    border-bottom: 0 solid #dddddd;
+}
+.table > tbody > tr  > td {
+    text-align: -webkit-right;
+    text-align: end;
+	line-height: 26px;
+	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.table > tbody > tr.no-records-found  > td {
+	text-align: -webkit-center!important;
+    text-align: center!important;
+	line-height: 26px;
+	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.table > tbody > tr  > td  .action{
+    text-align: -webkit-center;
+    text-align: center;
+}
+table .content{
+	text-align: left !important;
+	min-width: 58px !important;
+	max-width: 200px;
+	width: auto !important;
+}
+
+table .no{
+	text-align: center !important;
+	width: 46px !important;
+}
+table .href{
+	text-align: center !important;
+	width: 52px !important;
+}
+
+table .action{
+	text-align: center !important;
+	width: 78px !important;
+}
+table .auth{
+	text-align: center !important;
+	min-width: 82px !important;
+}
+table .user{
+	text-align: left !important;
+	max-width: 68px !important;
+	min-width: 48px !important;
+	width: auto !important;
+	word-break: break-all;
+	overflow:hidden;
+	white-space:nowrap;
+	text-overflow:ellipsis;
+	-o-text-overflow:ellipsis;
+}
+
+table .fieldname{
+	text-align: left !important;
+	max-width: 82px !important;
+	min-width: 68px !important;
+	width: auto !important;
+	word-break: break-all;
+	overflow:hidden;
+	white-space:nowrap;
+	text-overflow:ellipsis;
+	-o-text-overflow:ellipsis;
+}
+
+table .loginCount {
+	width: 42px !important;
+}
+table .time {
+	width: 142px !important;
+}
+table .ip {
+	width: 82px !important;
+}
+
+table tbody .sequence {
+    min-width: 56px !important;
+    width: 56px !important;
+    padding: 3px !important;
+    margin: 0 !important;
+}
+
+table .status {
+    width: auto !important;
+    min-width: 48px;
+    max-width: 52px;
+    text-align: center !important;
+}
+
+
+.caption {
+	line-height: 32px;
+	font-size: 22px;
+	display: inline-block;
+    color: #4c8fbd;
+}
+.caption .title{
+	font-size: 24px;
+	font-weight: normal;
+	font-family: Arial;
+}
+.clockface{
+	z-index:1000000;
+}
+
+.tableTools-search{
+	margin-bottom: 8px;
+    position: relative;
+}

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.1.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+ 	http://www.springframework.org/schema/beans classpath:/org/springframework/beans/factory/xml/spring-beans-4.1.xsd
+ 	http://www.springframework.org/schema/context classpath:/org/springframework/context/config/spring-context-4.1.xsd
+  	http://www.springframework.org/schema/mvc classpath:/org/springframework/web/servlet/config/spring-mvc-4.1.xsd
+  	http://www.springframework.org/schema/util classpath:/org/springframework/beans/factory/xml/spring-util-4.1.xsd">
+    
+    <!-- 启用mvc注解 -->
+	<mvc:default-servlet-handler />
+	
+	<context:component-scan base-package="cn.core.**.controller"/>
+	
+	<!-- 返回类型定义 -->
+	<mvc:annotation-driven>
+		<mvc:message-converters>
+			<ref bean="stringHttpMessageConverter" />
+			<ref bean="fastJsonHttpMessageConverter" />
+			<ref bean="marshallingHttpMessageConverter" />
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	<bean id="stringHttpMessageConverter"
+		class="org.springframework.http.converter.StringHttpMessageConverter">
+		<constructor-arg value="UTF-8" index="0"></constructor-arg>
+		<!--避免出现乱码 -->
+		<property name="supportedMediaTypes">
+			<list>
+				<value>text/plain;charset=UTF-8</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="fastJsonHttpMessageConverter"
+		class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<value>application/json;charset=UTF-8</value>
+				<value>text/html;charset=UTF-8</value><!-- 避免IE出现下载JSON文件的情况 -->
+				<value>text/plain;charset=UTF-8</value>
+			</list>
+		</property>
+		<property name="features">
+			<util:list>
+				<value>QuoteFieldNames</value>
+				<value>WriteMapNullValue</value>
+				<value>WriteDateUseDateFormat</value>
+				<value>DisableCircularReferenceDetect</value>
+			</util:list>
+		</property>
+	</bean>
+	<bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller" />
+	<bean id="marshallingHttpMessageConverter"
+		class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+		<property name="marshaller" ref="castorMarshaller" />
+		<property name="unmarshaller" ref="castorMarshaller" />
+		<property name="supportedMediaTypes">
+			<list>
+				<value>text/xml;charset=UTF-8</value>
+				<value>application/xml;charset=UTF-8</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 启用mvc注解 -->
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="webBindingInitializer">
+			<bean class="cn.core.utils.springmvc.BindingInitializer" />
+		</property>
+		<!-- @ResponseBody之后返回字符串中中文可能会出现乱码,以下解决 -->
+		<property name="messageConverters">
+			<list>
+				<bean
+					class="org.springframework.http.converter.StringHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>text/plain;charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	<!-- i18n -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="/WEB-INF/config/locale/messages" />
+		<!-- 用来定时刷新资源文件,可以不重启动 增加的属性为:以秒为单位,如果-1表示用不刷新 -->
+		<property name="cacheSeconds" value="3000" />
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+	<!-- 通过配置LocaleChangeInterceptor，我们可以动态改变本地语言。它会检测请求中的参数并且改变地区信息。它调用LoacalResolver.setLocal()进行配置。 -->
+	<bean id="localeChangeInterceptor"
+		class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+		<property name="paramName" value="lang" />
+	</bean>
+	<!-- 接收用户的系统对应的语言 -->
+	<bean id="acceptHeaderLocaleResolver"
+		class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver"></bean>
+	<!-- CookieLocaleResolver 这个解析器通过cookie寻找客户端特定的语言信息。如果找到，则使用这个配置。使用这个Locale 
+		resolvers的一些属性，我们可以指定这个cookie的名称甚至是最大存活时间。 -->
+	<bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+		<!-- 默认语言 -->
+		<property name="defaultLocale" value="zh_CN" />
+		<!-- 指定这个cookie的名称甚至是最大存活时间 <property name="cookieMaxAge" value="100000"> -->
+	</bean>
+
+	<bean id="handlerMapping"
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+		<property name="interceptors">
+			<ref bean="localeChangeInterceptor" />
+		</property>
+	</bean>
+	<!-- JSR303 Validator定义 -->
+	<bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+	<!-- 对静态资源的获取，如images文件夹下的图片。如果没有则访问不到 -->
+	<mvc:resources mapping="/**" location="/" />
+	
+	<!-- 视图解析器 -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass">
+	  		<value>org.springframework.web.servlet.view.JstlView</value>
+		</property>
+		<property name="prefix" value="/WEB-INF/view/admin/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+</beans>
